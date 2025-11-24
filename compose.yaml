@@ -1,0 +1,21 @@
+services:
+  notebook:
+    user: "${UID}:${GID}"
+    build: .
+    container_name: notebook
+    ports:
+      - "8888:8888"
+    volumes:
+      - "${JUPYTER_NOTEBOOK_PATH:-/var/local/notebooks}:/home/jovyan/notebooks"
+      - "./config:/home/jovyan/.jupyter"
+      - "${JUPYTER_LOCAL_PATH:-/etc/jupyter/.local}:/home/jovyan/.local"
+      - "${JUPYTER_SSL_CERTS_PATH:-/etc/server/certs/note}:/home/jovyan/certs"
+    working_dir: /home/jovyan
+    environment:
+      - UID=1000
+      - GID=1000
+      - SSL_CERT=${JUPYTER_SSL_CERT:-/home/jovyan/certs/cert.pem}
+      - SSL_KEY=${JUPYTER_SSL_KEY:-/home/jovyan/certs/cert.key}
+      - JUPYTER_ENABLE_LAB=yes
+    restart: unless-stopped
+
